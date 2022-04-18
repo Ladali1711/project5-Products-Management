@@ -1,27 +1,32 @@
-const express = require('express'); 
-const router = express.Router(); 
+const express = require("express");
+const router = express.Router();
+const userController = require("../controller/userController");
+const middleware = require("../middleware/auth");
+const productController = require("../controller/productController");
 
-const userController = require('../controller/user.controller');
-const bookController = require('../controller/book.controller'); 
-const reviewController = require('../controller/review.controller'); 
+router.post("/register", userController.createUser);
 
-const authMiddleware = require('../middleware/auth.middleware');
+router.post("/login", userController.userLogin);
 
-router.post('/register', userController.userRegister); 
-router.post('/login', userController.login); 
+router.get(
+  "/user/:userId/profile",
+  middleware.authenticate,
+  middleware.authorise,
+  userController.getUserById
+);
 
-router.post('/book', authMiddleware.auth, bookController.createBook); 
-router.get('/books', authMiddleware.auth, bookController.getBooks);
-router.get('/books/:bookId', authMiddleware.auth, bookController.getBooksByIdWithReviews); 
+router.put(
+  "/user/:userId/profile",
+  middleware.authenticate,
+  middleware.authorise,
+  userController.updateUser
+);
+//***************product apis*************************************************************
 
-router.put('/books/:bookId', authMiddleware.auth, bookController.updateByBookId); 
-router.delete('/books/:bookId', authMiddleware.auth, bookController.deleteBookById); 
+router.post("/products", productController.createProduct);
+router.get("/products",productController.getProduct)
+router.get("/products/:productId",productController.getProductById)
+router.put("/products/:productId",productController.updateProduct)
+router.delete("/products/:productId",productController.deleteProduct)
 
-// router for review
-
-router.post('/books/:bookId/review', authMiddleware.auth, reviewController.addReview); 
-router.put('/books/:bookId/review/:reviewId', authMiddleware.auth, reviewController.updateReview);
-router.delete('/books/:bookId/review/:reviewId', authMiddleware.auth, reviewController.deleteReview); 
-
-
-module.exports = router; 
+module.exports = router;
