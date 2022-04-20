@@ -1,13 +1,29 @@
 const mongoose = require("mongoose");
 
 const isValid = function (value) {
-  if (typeof value === "undefined" || value === null) return false;
+  if (typeof value === undefined || value === null) return false;
   if (typeof value === "string" && value.trim().length === 0) return false;
   return true;
 };
 
 const isValidBody = function (requestBody) {
   return Object.keys(requestBody).length > 0;
+};
+
+const isValidStatus = function (status) {
+  return ["pending", "completed", "cancelled"].indexOf(status) !== -1;
+};
+
+const isValidName = function (name) {
+  if (!/^[a-z ,.'-]+$/i.test(name)) {
+    return false;
+  }
+  return true;
+};
+
+const validQuantity = function isInteger(value) {
+  if (value < 1) return false;
+  if (value % 1 == 0) return true;
 };
 
 const isValidobjectId = (objectId) => {
@@ -22,13 +38,18 @@ const isValidEmail = function (value) {
 };
 
 const isValidNumber = function (value) {
-  // if (!(/^(?:(?:\+|0{0,2})91(\s*[\ -]\s*)?|[0]?)?[789]\d{9}|(\d[ -]?){10}\d$/.test(value.trim()))) {
   if (
     !/^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[6789]\d{9}$/.test(value.trim())
   ) {
     return false;
   }
   return true;
+};
+
+const validPincode = function (value) {
+  if (!/^[1-9][0-9]{5}$/.test(value.trim())) {
+    return false;
+  }
 };
 
 const isValidPassword = function (value) {
@@ -49,11 +70,17 @@ const isValidSize = function (value) {
   return ["S", "XS", "M", "X", "L", "XXL", "XL"].indexOf(value) !== -1;
 };
 
-module.exports.isValid = isValid;
-module.exports.isValidBody = isValidBody;
-module.exports.isValidobjectId = isValidobjectId;
-module.exports.isValidEmail = isValidEmail;
-module.exports.isValidNumber = isValidNumber;
-module.exports.isValidPassword = isValidPassword;
-module.exports.isValidPrice = isValidPrice;
-module.exports.isValidSize = isValidSize;
+module.exports = {
+  isValid,
+  isValidBody,
+  isValidobjectId,
+  isValidEmail,
+  isValidNumber,
+  isValidPassword,
+  isValidPrice,
+  isValidSize,
+  validPincode,
+  isValidName,
+  validQuantity,
+  isValidStatus,
+};
